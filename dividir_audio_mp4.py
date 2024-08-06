@@ -18,11 +18,11 @@ def select_file():
     )
     return file_path
 
-def convert_video_to_audio(video_path, audio_path):
+def extract_audio_from_video(video_path, audio_path):
     video = mp.VideoFileClip(video_path)
     video.audio.write_audiofile(audio_path)
 
-def split_audio_and_convert(audio_path, output_dir, output_format="mp4"):
+def split_audio(audio_path, output_dir, output_format):
     audio = AudioSegment.from_file(audio_path)
     duration = len(audio)
     part_duration = duration // 5
@@ -47,17 +47,17 @@ if __name__ == "__main__":
 
         try:
             if file_path.endswith(".mp4"):
-                audio_path = "converted_audio.mp3"
-                print("Convertendo vídeo para áudio...")
-                convert_video_to_audio(file_path, audio_path)
-                print("Áudio convertido com sucesso.")
-                print("Dividindo áudio em 5 partes e convertendo para MP4...")
-                split_audio_and_convert(audio_path, output_dir, output_format="mp4")
+                audio_path = "extracted_audio.wav"
+                print("Extraindo áudio do vídeo...")
+                extract_audio_from_video(file_path, audio_path)
+                print("Áudio extraído com sucesso.")
+                print("Dividindo áudio em 5 partes...")
+                split_audio(audio_path, output_dir, output_format="wav")
                 os.remove(audio_path)
             elif file_path.endswith(".mp3"):
                 audio_path = file_path
-                print("Dividindo áudio em 5 partes e convertendo para MP4...")
-                split_audio_and_convert(audio_path, output_dir, output_format="mp4")
+                print("Dividindo áudio em 5 partes...")
+                split_audio(audio_path, output_dir, output_format="mp3")
             print(f"Áudio dividido com sucesso. As partes estão salvas na pasta '{output_dir}'.")
         except Exception as e:
             print(f"Ocorreu um erro: {e}")
